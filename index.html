@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aurelle</title>
+<style>
+:root{--bg:#fff;--ink:#141414;--mute:#6f6a62;--gold:#b98d3e;--line:#e8e3da;--btn:#141414;--btnt:#fff;--bar:#141414;--bart:#fff;--foot:#141414;--foott:#fff;--r:12px;--br:8px;--fh:"Cormorant Garamond";--fb:"Jost";--hw:500;--bw:300;--fs:16px;--cols:4;--colsT:3;--colsM:2;--ratio:1/1;--pad:50px;color-scheme:light}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb),system-ui,sans-serif;font-weight:var(--bw);font-size:var(--fs);line-height:1.5}
+h1,h2,h3,.logo{font-family:var(--fh),Georgia,serif;font-weight:var(--hw)}
+button{font:inherit;color:inherit;cursor:pointer}
+.bar{background:var(--bar);color:var(--bart);text-align:center;font-size:13px;padding:9px 12px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:12px 18px}
+.hl,.hr{display:flex;align-items:center;gap:8px}
+header.l .hr{margin-left:auto}header.l .logo{margin-left:6px}
+header.c .hl,header.c .hr{flex:1}header.c .hr{justify-content:flex-end}
+.ib{background:none;border:0;padding:6px;position:relative;display:flex;align-items:center;font-size:22px;line-height:1}
+.ib svg{width:24px;height:24px;stroke:var(--ink);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.logo{text-decoration:none;color:var(--ink);white-space:nowrap}
+.cnt{position:absolute;top:-2px;right:-4px;background:var(--gold);color:#fff;font:500 11px sans-serif;border-radius:10px;min-width:17px;height:17px;display:none;align-items:center;justify-content:center;padding:0 4px}
+#sb{display:none;padding:10px 18px;border-bottom:1px solid var(--line)}
+#sb input{width:100%;border:1px solid var(--line);border-radius:var(--br);padding:12px 16px;font:inherit;outline:none;background:var(--bg);color:var(--ink)}
+#drawer{position:fixed;inset:0;z-index:20;display:none}
+#drawer.o{display:block}
+#drawer .sh{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+#drawer .pn{position:absolute;left:0;top:0;bottom:0;width:min(300px,82vw);background:var(--bg);padding:24px;display:flex;flex-direction:column;gap:4px}
+#drawer a{padding:14px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);font-size:17px}
+.hero{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+.hero.center{grid-template-columns:1fr}
+.hero .txt{padding:60px 6vw;display:flex;flex-direction:column;justify-content:center;gap:18px}
+.hero h1{line-height:1.05}
+.hero p{opacity:.8;max-width:38ch}
+.hero:not(.center) p{color:var(--mute);opacity:1}
+.btn{background:var(--btn);color:var(--btnt);border:1px solid var(--btn);border-radius:var(--br);padding:13px 26px;font-weight:400;text-decoration:none;display:inline-block;text-align:center}
+.btn.o{background:var(--bg);color:var(--ink);border-color:var(--ink)}
+.art{display:flex;align-items:center;justify-content:center;border-left:1px solid var(--line);overflow:hidden}
+.hero.right .art{order:-1;border-left:0;border-right:1px solid var(--line)}
+.art svg{width:min(80%,360px)}.art img{width:100%;height:100%;object-fit:cover}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.art{min-height:280px;border:0;border-top:1px solid var(--line)}.hero.right .art{order:0}}
+section,.pg{padding:var(--pad) 20px;max-width:1120px;margin:0 auto}
+h2{font-size:2.1em;margin-bottom:6px}
+.sub{color:var(--mute);margin-bottom:24px}
+.chips{display:flex;gap:10px;overflow-x:auto;margin-bottom:24px;padding-bottom:4px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:24px;padding:9px 20px;font-size:14px;white-space:nowrap}
+.chip.on{background:var(--btn);color:var(--btnt);border-color:var(--btn)}
+.grid{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:22px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(var(--colsT),1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:repeat(var(--colsM),1fr);gap:12px}}
+.card{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer}
+.thumb{aspect-ratio:var(--ratio);display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--line);overflow:hidden}
+.thumb svg.j{width:62%}
+.tag{position:absolute;top:10px;left:10px;background:var(--gold);color:#fff;font-size:12px;padding:3px 10px;border-radius:4px}
+.hb{position:absolute;top:8px;right:8px;background:var(--bg);border:1px solid var(--line);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.hb svg{width:19px;height:19px;stroke:var(--ink);fill:none;stroke-width:1.8}
+.hb.on svg{fill:#c0392b;stroke:#c0392b}
+.info{padding:14px 16px 16px}
+.info h3{font-size:1.3em}
+.meta{color:var(--mute);font-size:13px;margin:2px 0 10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.price b{font-weight:500;font-size:1.1em}.price s{color:var(--mute);font-size:13px;margin-left:6px}
+.add{width:38px;height:38px;border-radius:var(--br);border:0;background:var(--btn);color:var(--btnt);font-size:22px}
+.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.of{border:1px dashed var(--gold);border-radius:var(--r);padding:22px}
+.of h3{font-size:1.6em}.of p{color:var(--mute);font-size:14px;margin:4px 0 14px}
+.code{display:inline-block;border:1px solid var(--line);border-radius:6px;padding:6px 14px;font-weight:500;letter-spacing:.1em;cursor:pointer}
+.band{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:30px;text-align:center}
+.feat h3{font-size:1.4em;color:var(--gold)}.feat p{color:var(--mute);font-size:14px}
+footer{background:var(--foot);color:var(--foott);text-align:center;padding:44px 20px;font-size:14px}
+footer .logo{font-size:24px;display:block;margin-bottom:10px;color:var(--foott)}
+.pd{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-bottom:120px}
+@media(max-width:760px){.pd{grid-template-columns:1fr;gap:20px}}
+.big{border:1px solid var(--line);border-radius:var(--r);aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.big svg.j{width:60%}
+.pd h1{font-size:2.1em;margin:6px 0}
+.back{background:none;border:0;color:var(--mute);margin-bottom:14px;padding:0}
+.pp{font-size:1.8em;font-weight:400}.pp s{color:var(--mute);font-size:16px;margin:0 8px}
+.off{background:var(--btn);color:var(--btnt);font-size:12px;padding:3px 10px;border-radius:12px}
+.bd{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.bd span{border:1px solid var(--line);border-radius:22px;padding:7px 16px;font-size:14px}
+.pin{display:flex;border:1px solid var(--line);border-radius:var(--br);padding:5px;margin:8px 0 18px}
+.pin input{flex:1;border:0;outline:0;padding:8px 12px;font:inherit;min-width:0;background:transparent;color:var(--ink)}
+.pin button{background:var(--btn);color:var(--btnt);border:0;border-radius:var(--br);padding:0 18px}
+details{border-top:1px solid var(--line);padding:14px 4px}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer}
+details p{color:var(--mute);font-size:14px;margin-top:8px}
+.sticky{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:12px 18px;display:flex;gap:12px;align-items:center;z-index:6}
+.sticky .price{margin-right:auto}.sticky .btn{padding:13px 20px;cursor:pointer}
+.ci{display:flex;gap:16px;align-items:center;border-bottom:1px solid var(--line);padding:16px 0}
+.ci .th{width:72px;height:72px;border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ci .th svg{width:60%}.ci .x{flex:1}
+.ci button.rm{background:none;border:0;color:var(--mute);font-size:13px;text-decoration:underline}
+.tot{display:flex;justify-content:space-between;font-size:20px;padding:20px 0}
+.empty{color:var(--mute);padding:30px 0}
+.ck .box{display:grid;gap:10px;margin:14px 0}
+.ck input,.ck textarea{border:1px solid var(--line);border-radius:var(--br);padding:12px 14px;font:inherit;width:100%;background:var(--bg);color:var(--ink)}
+.ck .sum{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.ck .tot{font-size:20px}
+.qb{width:30px;height:30px;border:1px solid var(--line);background:var(--bg);border-radius:50%;font-size:16px;line-height:1}
+.r2{display:flex;align-items:center;gap:12px}
+.dl{border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.pb h3{font-size:1.4em;margin-bottom:4px}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.tr{text-align:center;border:1px solid var(--line);border-radius:var(--r);padding:14px 6px}
+.tr svg{width:26px;height:26px;stroke:var(--gold);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;display:block;margin:0 auto 6px}
+.tr b{display:block;font-weight:500;font-size:12.5px}.tr span{color:var(--mute);font-size:11.5px;display:block}
+.slw{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.sl{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.sl::-webkit-scrollbar{display:none}
+.sd{flex:0 0 100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.sd img,.sd video{width:100%;height:100%;object-fit:cover}
+.dots{position:absolute;bottom:10px;left:0;right:0;display:flex;gap:6px;justify-content:center;pointer-events:none}
+.dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.25)}
+.dots i.on{background:var(--btn);border-color:var(--btn)}
+.ar{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg);font-size:22px;line-height:1;z-index:2}
+.ar.l{left:8px}.ar.r{right:8px}
+.lk2{background:none;border:0;color:var(--mute);text-decoration:underline;font-size:12px;padding:0;margin-top:8px}
+@keyframes zin{from{transform:scale(1.18);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.hero.an .art img,.hero.an .art svg{animation:zin 1.6s cubic-bezier(.2,.7,.2,1) both}
+.hero.an.center{animation:fin 1.2s ease both}
+.hero.an .txt h1{animation:fup .9s ease .25s both}
+.hero.an .txt p{animation:fup .9s ease .5s both}
+.hero.an .txt .btn{animation:fup .9s ease .8s both}
+@media(prefers-reduced-motion:reduce){.hero.an .art img,.hero.an .art svg,.hero.an .txt h1,.hero.an .txt p,.hero.an .txt .btn{animation-name:fin}}
+.avt{width:30px;height:30px;border-radius:50%;background:var(--btn);color:var(--btnt);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:14px;font-family:var(--fb),sans-serif}
+.steps{display:flex;margin:14px 0 8px}
+.stp{flex:1;text-align:center;position:relative;font-size:11px;color:var(--mute)}
+.stp i{display:block;width:14px;height:14px;border-radius:50%;border:2px solid var(--line);background:var(--bg);margin:0 auto 6px;position:relative;z-index:1}
+.stp::before{content:"";position:absolute;top:6px;left:-50%;width:100%;height:2px;background:var(--line)}
+.stp:first-child::before{display:none}
+.stp.on i{background:var(--gold);border-color:var(--gold)}.stp.on::before{background:var(--gold)}.stp.on{color:var(--ink)}
+.tls{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.tl{display:flex;gap:10px;padding:6px 0;font-size:13px}.tl i{width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:6px;flex:none}
+.ck input[type=radio]{width:auto;padding:0;margin:0}
+#toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,40px);opacity:0;background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:8px;font-size:14px;transition:.25s;z-index:30;pointer-events:none}
+#toast.s{transform:translate(-50%,0);opacity:1}
+</style>
+<style id="cx"></style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<header id="hd"></header>
+<div id="sb"><input id="q" type="search" placeholder="Search products…" autocomplete="off"></div>
+<div id="drawer"><div class="sh"></div><div class="pn" id="dn"></div></div>
+<main id="app"></main>
+<footer id="ft"></footer>
+<div id="toast"></div>
+<script>
+// =====================================================================
+//  PASTE YOUR VALUES HERE. Only FB and FB_API_KEY are needed now (RZP_KEY_ID and API_BASE are for online payment, later). Search for "PASTE_" to find them.
+// =====================================================================
+// 1) Firebase Realtime Database URL (from Firebase console)
+const FB="https://arenaoftrend-default-rtdb.asia-southeast1.firebasedatabase.app"; // e.g. https://my-shop-default-rtdb.firebaseio.com
+
+// 2) Razorpay KEY ID (Razorpay Dashboard > Account & Settings > API Keys).
+//    Starts with rzp_test_ while testing, rzp_live_ when live. This one is safe to keep here.
+//    NEVER paste the Key Secret in this file. It goes in your server settings only.
+const RZP_KEY_ID="PASTE_RAZORPAY_KEY_ID_HERE";
+
+// 3) Address of your payment server function (the razorpay.js file I gave you, once hosted)
+//    e.g. https://yourshop.netlify.app/.netlify/functions/razorpay
+const API_BASE="PASTE_YOUR_PAYMENT_SERVER_URL_HERE";
+
+// 4) Firebase Web API key (Firebase console > Project settings > General > Web API key).
+//    Needed for customer login. Also turn on Email/Password in Firebase > Authentication.
+// Cash on Delivery orders: ON. Set to false to turn COD ordering off (the COD badge on product pages stays).
+const ENABLE_COD=true;
+
+const FB_API_KEY="AIzaSyBugwuzVzO4LEFeqp4RILtsRJbTeWKzOeE";
+// =====================================================================
+const D={bg:"#ffffff",ink:"#141414",mute:"#6f6a62",accent:"#b98d3e",line:"#e8e3da",btn:"#141414",btnText:"#ffffff",bar:"#141414",barText:"#ffffff",foot:"#141414",footText:"#ffffff",
+fontHead:"Cormorant Garamond",fontBody:"Jost",headWeight:"500",bodyWeight:"300",baseSize:16,heroSize:66,logoSize:26,logoSpacing:0.32,
+radius:12,btnRadius:8,cols:4,cardRatio:"1/1",heroH:480,heroLayout:"left",heroAlign:"left",secPad:50,headerLayout:"left",logoImgH:32,
+showBar:true,barTxt:"Free studs worth ₹1,495 on orders above ₹2,499",storeName:"Aurelle",logoText:"AURELLE",logoImg:"",
+heroTitle:"Gold that lives on your skin, every day.",heroSub:"Anti-tarnish, skin-safe pieces made to be layered, gifted and worn without taking off.",heroBtn:"Shop the collection",heroImg:"",
+shopTitle:"Bestsellers",shopSub:"Everything under ₹1,000, finished in 18k gold tone.",offTitle:"Stack more, pay less",offSub:"Tap a code to copy it, then use it at checkout.",
+o1t:"Any 2 for ₹1,899",o1d:"Pair a bracelet with a necklace.",o1c:"STACK2",o2t:"Any 3 for ₹2,699",o2d:"Build a full layered set.",o2c:"STACK3",o3t:"Any 4 for ₹2,999",o3d:"Our best value across the range.",o3c:"STACK4",
+f1t:"Anti-tarnish",f1d:"Holds its shine through showers and workouts.",f2t:"Skin safe",f2d:"Nickel-free, gentle on sensitive skin.",f3t:"Easy returns",f3d:"Not right? Send it back within 15 days.",
+footTxt:"Returns & Exchange · Stores · Support · About us",pdOffT:"Get it for ₹750",pdOffD:"Buy 4 at ₹2,999 with code STACK4.",pdCode:"STACK4",retTxt:"Easy 15-day returns and exchanges on unworn pieces.",
+freeShip:0,supPhone:"",supEmail:"",shipFee:49,platFee:150,delivTxt:"5-7 days",showTrust:true,tr1t:"Cash on Delivery",tr1d:"Pay when it arrives",tr2t:"7 Day Returns",tr2d:"Easy return & exchange",tr3t:"24/7 Customer Support",tr3d:"We are always here to help",
+order:"hero,shop,offers,feat",show_hero:true,show_shop:true,show_offers:true,show_feat:true,css:""};
+const DEF=[
+ {id:1,n:"Layered Bead Bracelet",c:"Bracelets",p:999,o:4999,t:"Bestseller",k:"b",d:"Two fine chains with tiny black beads, finished in 18k gold tone. Adjustable length."},
+ {id:2,n:"Heart Charm Bracelet",c:"Bracelets",p:999,o:3184,t:"Bestseller",k:"h",d:"A paper-clip chain with a single gold heart charm that sits right at the wrist."},
+ {id:3,n:"Slim Cuff Bracelet",c:"Bracelets",p:999,o:3647,t:"",k:"c",d:"A smooth open cuff that slides on in a second and stacks with anything."},
+ {id:4,n:"Black Bead Necklace",c:"Necklaces",p:999,o:3299,t:"Bestseller",k:"n",d:"A fine chain with black beads in a V shape. Light enough for all-day wear."},
+ {id:5,n:"Bow Pendant Necklace",c:"Necklaces",p:999,o:2899,t:"",k:"w",d:"A tiny sculpted bow on a beaded chain, made for gifting."},
+ {id:6,n:"Starlight Band Ring",c:"Rings",p:999,o:2499,t:"New",k:"r",d:"A wide gold band set with small stones and star engravings."},
+ {id:7,n:"Twin Stone Ring",c:"Rings",p:999,o:2799,t:"",k:"r",d:"A simple band with two bright stones. Easy to layer."},
+ {id:8,n:"Emerald Drop Hoops",c:"Earrings",p:999,o:3499,t:"Bestseller",k:"e",d:"Small gold hoops with emerald-green drops."}];
+let C={...D},ALL=DEF.slice(),P=ALL,cat="All",qs="",cart={},liked={},keep=0;
+const G='stroke="#b98d3e" stroke-width="3" fill="none" stroke-linecap="round"';
+const S={
+ b:`<svg class="j" viewBox="0 0 100 100"><circle cx="50" cy="52" r="32" ${G} stroke-dasharray="1 6" stroke-width="4"/><circle cx="50" cy="52" r="27" ${G}/><circle cx="50" cy="20" r="3" fill="#b98d3e"/></svg>`,
+ h:`<svg class="j" viewBox="0 0 100 100"><circle cx="50" cy="50" r="32" ${G}/><path d="M50 82c-8-6-12-10-12-14a6 6 0 0 1 12-2 6 6 0 0 1 12 2c0 4-4 8-12 14z" fill="#b98d3e"/></svg>`,
+ c:`<svg class="j" viewBox="0 0 100 100"><ellipse cx="50" cy="52" rx="34" ry="30" ${G} stroke-width="7"/></svg>`,
+ n:`<svg class="j" viewBox="0 0 100 100"><path d="M16 14Q50 98 84 14" ${G}/><circle cx="50" cy="70" r="5" fill="#141414"/><circle cx="34" cy="48" r="3" fill="#141414"/><circle cx="66" cy="48" r="3" fill="#141414"/></svg>`,
+ w:`<svg class="j" viewBox="0 0 100 100"><path d="M16 14Q50 80 84 14" ${G}/><path d="M50 62l-14-9v18zM50 62l14-9v18z" fill="#b98d3e"/></svg>`,
+ r:`<svg class="j" viewBox="0 0 100 100"><ellipse cx="50" cy="56" rx="22" ry="26" ${G} stroke-width="8"/><circle cx="50" cy="30" r="4" fill="#fff" stroke="#b98d3e"/></svg>`,
+ e:`<svg class="j" viewBox="0 0 100 100"><circle cx="34" cy="38" r="14" ${G}/><circle cx="66" cy="38" r="14" ${G}/><rect x="28" y="58" width="12" height="16" fill="#2f9d6b"/><rect x="60" y="58" width="12" height="16" fill="#2f9d6b"/></svg>`};
+const ART=`<svg viewBox="0 0 200 200" fill="none" stroke="#b98d3e" stroke-width="2.2"><circle cx="100" cy="104" r="64" stroke-dasharray="1 5" stroke-linecap="round" stroke-width="4"/><circle cx="100" cy="104" r="54" stroke-dasharray="1 5" stroke-linecap="round" stroke-width="4"/><path d="M84 40q16-26 32 0"/><circle cx="100" cy="30" r="4" fill="#b98d3e"/></svg>`;
+const HEART='<svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/></svg>';
+const $=id=>document.getElementById(id),app=$("app");
+let heroAn=true;setTimeout(()=>heroAn=false,2600); // hero intro animation plays only on first load
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr=n=>"₹"+Number(n).toLocaleString("en-IN");
+const vis=x=>x.img&&String(x.img).startsWith("data:image/")?`<img src="${esc(x.img)}" alt="" style="width:100%;height:100%;object-fit:cover">`:(S[x.k]||S.b);
+const goTop=()=>{if(!keep)scrollTo(0,0)};
+function setAll(a){ALL=a;P=a.filter(x=>x.v!==false)}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("s");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("s"),1800)}
+function badges(){const c=Object.values(cart).reduce((a,b)=>a+b,0),l=Object.keys(liked).length;
+ [["cc",c],["wc",l]].forEach(([i,v])=>{const e=$(i);if(e){e.textContent=v;e.style.display=v?"flex":"none"}})}
+const LW={"Playfair Display":"400;500;600;700",Lora:"400;500;600;700",Cinzel:"400;500;600;700"};
+function theme(){
+ const r=document.documentElement.style,m={bg:"--bg",ink:"--ink",mute:"--mute",accent:"--gold",line:"--line",btn:"--btn",btnText:"--btnt",bar:"--bar",barText:"--bart",foot:"--foot",footText:"--foott"};
+ for(const k in m)r.setProperty(m[k],C[k]);
+ r.setProperty("--fh",`"${C.fontHead}"`);r.setProperty("--fb",`"${C.fontBody}"`);r.setProperty("--hw",C.headWeight);r.setProperty("--bw",C.bodyWeight);
+ r.setProperty("--fs",C.baseSize+"px");r.setProperty("--r",C.radius+"px");r.setProperty("--br",C.btnRadius+"px");r.setProperty("--pad",C.secPad+"px");
+ r.setProperty("--cols",C.cols);r.setProperty("--colsT",Math.min(C.cols,3));r.setProperty("--colsM",Math.min(C.cols,2));r.setProperty("--ratio",C.cardRatio);
+ const fam=[...new Set([C.fontHead,C.fontBody])].map(f=>"family="+f.replace(/ /g,"+")+":wght@"+(LW[f]||"300;400;500;600;700")).join("&");
+ let l=$("gf");if(!l){l=document.createElement("link");l.id="gf";l.rel="stylesheet";document.head.appendChild(l)}
+ const h="https://fonts.googleapis.com/css2?"+fam+"&display=swap";if(l.href!=h)l.href=h;
+ $("cx").textContent=C.css||"";document.title=C.storeName;
+ const b=$("bar");b.style.display=C.showBar?"block":"none";b.textContent=C.barTxt;
+ const lg=C.logoImg?`<img src="${esc(C.logoImg)}" alt="${esc(C.logoText)}" style="height:${C.logoImgH}px;display:block">`:esc(C.logoText);
+ const ls=`font-size:${C.logoSize}px;letter-spacing:${C.logoSpacing}em`;
+ const hd=$("hd");hd.className=C.headerLayout=="center"?"c":"l";
+ hd.innerHTML=`<div class="hl"><button class="ib" id="menu" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div><a class="logo" href="#/" style="${ls}">${lg}</a><div class="hr"><button class="ib" id="srch" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button><button class="ib" id="wl" aria-label="Liked products"><svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/></svg><span class="cnt" id="wc"></span></button><button class="ib" id="ct" aria-label="Cart"><svg viewBox="0 0 24 24"><path d="M5.5 8h13l1 12h-15z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="cnt" id="cc"></span></button><button class="ib" id="pf" aria-label="Account">${USER?`<span class="avt">${esc(USER.name[0].toUpperCase())}</span>`:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>'}</button></div>`;
+ $("dn").innerHTML=`<span class="logo" style="font-size:24px;margin-bottom:14px">${lg}</span>`+["All",...new Set(P.map(x=>x.c))].map(c=>`<a href="#/" data-cat="${c}">${c=="All"?"Home":c}</a>`).join("")+`<a href="#/wishlist">Liked products</a><a href="#/orders">My orders</a><a href="#/account">${USER?"My account":"Login / Sign up"}</a>`;
+ $("ft").innerHTML=`<span class="logo">${esc(C.logoText)}</span>${esc(C.footTxt)}${C.supPhone||C.supEmail?`<br>Support: ${esc([C.supPhone,C.supEmail].filter(Boolean).join(" · "))}`:""}`;badges()}
+function card(x){return `<div class="card" data-go="${esc(x.id)}"><div class="thumb">${x.so?`<span class="tag" style="background:var(--ink)">Sold out</span>`:x.t?`<span class="tag">${esc(x.t)}</span>`:""}<button class="hb${liked[x.id]?" on":""}" data-like="${esc(x.id)}" aria-label="Like">${HEART}</button>${vis(x)}</div><div class="info"><h3>${esc(x.n)}</h3><div class="meta">${esc(x.c)} · Anti-tarnish</div><div class="row"><span class="price"><b>₹${x.p}</b><s>${inr(x.o)}</s></span><button class="add" data-add="${esc(x.id)}" aria-label="Add to cart"${x.so?' disabled style="opacity:.35"':""}>+</button></div></div></div>`}
+function grid(l){return l.length?`<div class="grid">${l.map(card).join("")}</div>`:`<p class="empty">No products found.</p>`}
+const SEC={
+ hero:()=>{const ce=C.heroLayout=="center",bgi=ce&&C.heroImg?`background:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)),url(${esc(C.heroImg)}) center/cover;color:#fff;`:"";
+  const al={left:"flex-start",center:"center",right:"flex-end"}[C.heroAlign]||"flex-start";
+  return `<div class="hero ${esc(C.heroLayout)}${heroAn?" an":""}" style="min-height:${C.heroH}px;${bgi}"><div class="txt" style="align-items:${al};text-align:${esc(C.heroAlign)}"><h1 style="font-size:clamp(30px,6vw,${C.heroSize}px)">${esc(C.heroTitle)}</h1><p>${esc(C.heroSub)}</p>${C.heroBtn?`<a class="btn" href="#shop" data-scroll>${esc(C.heroBtn)}</a>`:""}</div>${ce?"":`<div class="art">${C.heroImg?`<img src="${esc(C.heroImg)}" alt="">`:ART}</div>`}</div>`},
+ shop:()=>{const cats=["All",...new Set(P.map(x=>x.c))],l=P.filter(x=>cat=="All"||x.c==cat);
+  return `<section id="shop"><h2>${esc(C.shopTitle)}</h2><p class="sub">${esc(C.shopSub)}</p><div class="chips">${cats.map(c=>`<button class="chip${c==cat?" on":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("")}</div><div id="gl">${grid(l)}</div></section>`},
+ offers:()=>`<div class="band"><section><h2>${esc(C.offTitle)}</h2><p class="sub">${esc(C.offSub)}</p><div class="offers">${[1,2,3].map(i=>`<div class="of"><h3>${esc(C["o"+i+"t"])}</h3><p>${esc(C["o"+i+"d"])}</p><span class="code" data-code="${esc(C["o"+i+"c"])}">${esc(C["o"+i+"c"])}</span></div>`).join("")}</div></section></div>`,
+ feat:()=>`<section><div class="feat">${[1,2,3].map(i=>`<div><h3>${esc(C["f"+i+"t"])}</h3><p>${esc(C["f"+i+"d"])}</p></div>`).join("")}</div></section>`};
+function home(){app.innerHTML=C.order.split(",").filter(k=>SEC[k]&&C["show_"+k]!==false).map(k=>SEC[k]()).join("")}
+let MC={};
+function slider(l){return `<div class="sl" id="sl">${l.map(k=>`<div class="sd">${k.t=="v"?`<video src="${esc(k.s)}" controls playsinline preload="metadata"></video>`:`<img src="${esc(k.s)}" alt="">`}</div>`).join("")}</div>${l.length>1?`<div class="dots" id="dots">${l.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div><button class="ar l" data-sl="-1" aria-label="Previous">‹</button><button class="ar r" data-sl="1" aria-label="Next">›</button>`:""}`}
+async function loadMedia(x){
+ if(!x.mc||FB.startsWith("PASTE")||MC[x.id])return;
+ try{const r=await fetch(FB.replace(/\/$/,"")+"/media/"+encodeURIComponent(x.id)+".json"),o=await r.json(),l=Array.isArray(o)?o.filter(Boolean):Object.values(o||{});
+  if(l.length){MC[x.id]=l;const w=$("slw");if(w&&location.hash=="#/product/"+x.id)w.innerHTML=slider(l)}}catch(_){}}
+document.addEventListener("scroll",e=>{const s=e.target;if(s&&s.id=="sl"){const i=Math.round(s.scrollLeft/s.clientWidth);document.querySelectorAll("#dots i").forEach((d,k)=>d.classList.toggle("on",k==i))}},true);
+const LS={get(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(_){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}};
+let USER=LS.get("aur_user",null),amode="in",nextHash="";
+const authOK=()=>!FB_API_KEY.startsWith("PASTE");
+async function authCall(ep,body){const r=await fetch("https://identitytoolkit.googleapis.com/v1/accounts:"+ep+"?key="+FB_API_KEY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const d=await r.json();
+ if(!r.ok){const e=(d.error&&d.error.message)||"";throw new Error(e.includes("EMAIL_EXISTS")?"This email already has an account. Please log in.":/INVALID|EMAIL_NOT_FOUND/.test(e)?"Wrong email or password":e.includes("WEAK_PASSWORD")?"Password must be at least 6 characters":e.includes("TOO_MANY")?"Too many tries. Please wait a bit":e.includes("OPERATION_NOT_ALLOWED")?"Login is not turned on in Firebase yet":/API.?KEY/i.test(e)?"The login key in this site is not valid":"Something went wrong. Please try again")}return d}
+function saveUser(d,name){USER={name:name||d.displayName||String(d.email||"U").split("@")[0],email:d.email,uid:d.localId,rt:d.refreshToken,tok:d.idToken,exp:Date.now()+(+d.expiresIn||3600)*1000-60000};LS.set("aur_user",USER);theme()}
+async function signup(name,email,pw){const d=await authCall("signUp",{email,password:pw,returnSecureToken:true});const u=await authCall("update",{idToken:d.idToken,displayName:name,returnSecureToken:true});saveUser({...d,...u,email},name)}
+async function signin(email,pw){saveUser(await authCall("signInWithPassword",{email,password:pw,returnSecureToken:true}))}
+async function getTok(){if(!USER)return null;if(Date.now()<USER.exp)return USER.tok;
+ try{const r=await fetch("https://securetoken.googleapis.com/v1/token?key="+FB_API_KEY,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(USER.rt)});const d=await r.json();if(!r.ok)throw 0;
+  USER.tok=d.id_token;USER.rt=d.refresh_token;USER.exp=Date.now()+(+d.expires_in||3600)*1000-60000;LS.set("aur_user",USER);return USER.tok}
+ catch(_){USER=null;LS.set("aur_user",null);theme();return null}}
+async function doAuth(){const g=i=>$(i)?$(i).value.trim():"",up=amode=="up",e=g("a-e"),p=$("a-p").value;
+ if(up&&g("a-n").length<2)return toast("Enter your name");if(!/^\S+@\S+\.\S+$/.test(e))return toast("Enter a valid email");if(p.length<6)return toast("Password must be at least 6 characters");
+ const b=document.querySelector("[data-auth]");b.disabled=true;
+ try{up?await signup(g("a-n"),e,p):await signin(e,p);toast(up?"Account created":"Logged in");const h=nextHash||"/account";nextHash="";if(location.hash=="#"+h)route();else location.hash=h}catch(err){b.disabled=false;toast(err.message)}}
+async function forgot(){const e=$("a-e").value.trim();if(!/^\S+@\S+\.\S+$/.test(e))return toast("Type your email above first");try{await authCall("sendOobCode",{requestType:"PASSWORD_RESET",email:e});toast("Password reset link sent to your email")}catch(x){toast(x.message)}}
+function account(){
+ if(!authOK()){app.innerHTML=`<div class="pg ck"><h2>Account</h2><p class="empty">Login is not set up yet. Add your Firebase Web API key (FB_API_KEY) in main1.html.</p></div>`;return}
+ if(USER){app.innerHTML=`<div class="pg ck" style="text-align:center"><div class="avt" style="width:76px;height:76px;font-size:32px;margin:10px auto 14px">${esc(USER.name[0].toUpperCase())}</div><h2>${esc(USER.name)}</h2><p class="sub">${esc(USER.email)}</p><div class="box"><a class="btn" href="#/orders">My orders</a><a class="btn o" href="#/wishlist">Liked products</a><button class="btn o" data-logout>Log out</button></div></div>`;goTop();return}
+ const up=amode=="up";
+ app.innerHTML=`<div class="pg ck"><h2>${up?"Create account":"Welcome back"}</h2><p class="sub">${up?"Sign up to track your orders and delivery on any device.":"Log in to see your orders and delivery updates."}</p><div class="box">${up?'<input id="a-n" placeholder="Your name" autocomplete="name">':""}<input id="a-e" type="email" placeholder="Email" autocomplete="email"><input id="a-p" type="password" placeholder="Password${up?" (min 6 characters)":""}" autocomplete="${up?"new-password":"current-password"}"><button class="btn" data-auth>${up?"Sign up":"Log in"}</button></div><p class="meta" style="text-align:center">${up?'Already have an account? <button class="lk2" data-amode="in" style="margin:0">Log in</button>':'New here? <button class="lk2" data-amode="up" style="margin:0">Create account</button> · <button class="lk2" data-forgot style="margin:0">Forgot password?</button>'}</p></div>`;goTop()}
+const words=s=>String(s||"").toLowerCase().replace(/[^a-z0-9\u0980-\u09ff]+/g," ").trim().split(" ").filter(Boolean);
+const stem=w=>w.length>3&&w.endsWith("s")?w.slice(0,-1):w;
+function lev(a,b){const n=a.length,k=b.length,d=[];for(let i=0;i<=n;i++){d[i]=[i];for(let j=1;j<=k;j++)d[i][j]=i?0:j}
+ for(let i=1;i<=n;i++)for(let j=1;j<=k;j++){const c=a[i-1]==b[j-1]?0:1;d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+c);if(i>1&&j>1&&a[i-1]==b[j-2]&&a[i-2]==b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}
+ return d[n][k]}
+function vocab(){const v=new Set();P.forEach(x=>words([x.n,x.c,x.t,x.col||"Gold",x.d].join(" ")).forEach(w=>{if(w.length>2)v.add(stem(w))}));return v}
+function fixWords(raw){const voc=vocab(),vl=[...voc];
+ return words(raw).map(stem).map(t=>{if(voc.has(t)||vl.some(v=>v.startsWith(t)))return t;
+  const lim=t.length<=3?0:t.length<=5?1:t.length<=7?2:3;let best=null,bd=9;
+  if(lim)for(const v of vl){if(Math.abs(v.length-t.length)>lim)continue;const d=lev(t,v);if(d<bd){bd=d;best=v}}
+  return best&&bd<=lim?best:t})}
+function findP(tokens){return P.map(x=>{const nm=words(x.n).map(stem),ot=words([x.c,x.t,x.col||"Gold",skuOf(x),x.d].join(" ")).map(stem);let sc=0;
+ for(const t of tokens){let s=0;if(nm.some(w=>w==t))s=4;else if(nm.some(w=>w.startsWith(t)))s=3;else if(t.length>2&&nm.some(w=>w.includes(t)))s=2;else if(ot.some(w=>w.startsWith(t)||(t.length>2&&w.includes(t))))s=1;if(!s)return null;sc+=s}
+ return{x,sc}}).filter(Boolean).sort((a,b)=>b.sc-a.sc).map(r=>r.x)}
+function searchv(){
+ const raw=qs.trim(),orig=words(raw).map(stem),fixed=fixWords(raw),changed=orig.join(" ")!=fixed.join(" ");
+ let list=raw?findP(fixed):P.slice();if(raw&&!list.length&&changed)list=findP(orig);
+ const shownFixed=raw&&changed&&list.length&&findP(orig).length==0;
+ const note=shownFixed?`<p class="sub">Showing results for <b style="font-weight:500">${esc(fixed.join(" "))}</b>. You typed “${esc(raw)}”.</p>`:`<p class="sub">${raw?`${list.length} result${list.length==1?"":"s"} for “${esc(raw)}”`:`${list.length} products`}</p>`;
+ app.innerHTML=`<div class="pg"><h2>${raw?"Search results":"All products"}</h2>${note}${list.length?grid(list):`<p class="empty">No product matches “${esc(raw)}”. Here is everything we have:</p>${grid(P)}`}</div>`;goTop()}
+function product(id){
+ const x=P.find(p=>p.id==id);if(!x)return home();
+ const more=P.filter(p=>p.id!=id&&p.c==x.c).concat(P.filter(p=>p.id!=id&&p.c!=x.c)).slice(0,4);
+ app.innerHTML=`<div class="pg"><button class="back" data-back>← Back</button><div class="pd"><div class="big"><button class="hb${liked[x.id]?" on":""}" data-like="${esc(x.id)}" aria-label="Like">${HEART}</button><div class="slw" id="slw">${MC[x.id]?slider(MC[x.id]):vis(x)}</div></div><div><div class="pp">${inr(x.p)}<s>${inr(x.o)}</s><span class="off">${Math.max(0,Math.round(100-x.p/x.o*100))}% OFF</span></div><div class="meta">Inclusive of all taxes</div><h1>${esc(x.n)}</h1><div style="color:#d9a21b">★★★★<span style="color:#ddd">★</span> <span style="color:var(--mute);font-size:14px">4.2 | 5 reviews</span></div><div class="bd"><span>Anti-tarnish</span><span>Skin safe</span><span>18k gold tone</span></div><div class="meta" style="display:flex;gap:20px;flex-wrap:wrap"><span>Colour: ${sw(x)}${esc(x.col||"Gold")}</span><span>SKU: ${esc(skuOf(x))}</span></div><div class="of" style="margin:14px 0"><h3 style="font-size:22px">${esc(C.pdOffT)}</h3><p style="margin-bottom:10px">${esc(C.pdOffD)}</p><span class="code" data-code="${esc(C.pdCode)}">${esc(C.pdCode)}</span></div><b style="font-weight:400">Check delivery</b><div class="pin"><input id="pc" inputmode="numeric" maxlength="6" placeholder="Enter pincode"><button data-pin>Check</button></div><details><summary>Description</summary><p>${esc(x.d)}</p></details><details><summary>Specifications</summary><p>Plating: 18k gold tone · Base: stainless steel · Nickel-free</p></details><details><summary>Return policy</summary><p>${esc(C.retTxt)}</p></details>${trust()}</div></div><h2 style="margin-top:30px">Similar products</h2><br>${grid(more)}</div><div class="sticky"><span class="price"><b style="font-size:20px;font-weight:500">${inr(x.p)}</b><s>${inr(x.o)}</s></span>${x.so?'<button class="btn" disabled style="opacity:.5">Sold out</button>':`<button class="btn o" data-add="${esc(x.id)}">Add to Cart</button><button class="btn" data-buy="${esc(x.id)}">Buy Now</button>`}</div>`;goTop();loadMedia(x)}
+function list(ids,title,empty){const l=ids.map(i=>P.find(p=>p.id==i)).filter(Boolean);app.innerHTML=`<div class="pg"><h2>${title}</h2><br>${l.length?grid(l):`<p class="empty">${empty}</p>`}</div>`}
+function cartv(){
+ const ids=Object.keys(cart).filter(i=>P.find(p=>p.id==i));let tot=0;
+ app.innerHTML=`<div class="pg"><h2>Your cart</h2>${ids.length?ids.map(i=>{const x=P.find(p=>p.id==i),q=cart[i];tot+=x.p*q;return `<div class="ci"><div class="th">${vis(x)}</div><div class="x"><h3>${esc(x.n)}</h3><div class="meta">Qty ${q} · ${inr(x.p)}</div><button class="rm" data-rm="${esc(i)}">Remove</button></div><b style="font-weight:500">${inr(x.p*q)}</b></div>`}).join("")+`<div class="tot"><span>Total</span><b style="font-weight:500">${inr(tot)}</b></div><button class="btn" style="width:100%" data-checkout>Checkout</button>`:`<p class="empty">Your cart is empty. <a href="#/">Keep shopping</a></p>`}</div>`}
+
+let cust=LS.get("aur_cust",{}),cpn=null;
+const TRUCK='<svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M3 6h11v10H3zM14 9h4l3 3.5V16h-7"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>';
+const TI={cod:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/></svg>',ret:'<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg>',sup:'<svg viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v5H4zM17 14h3v5h-3z"/></svg>'};
+function trust(){if(C.showTrust===false)return"";return `<div class="trust">${[["cod",1],["ret",2],["sup",3]].map(([k,i])=>`<div class="tr">${TI[k]}<b>${esc(C["tr"+i+"t"])}</b><span>${esc(C["tr"+i+"d"])}</span></div>`).join("")}</div>`}
+const skuOf=x=>x.sku||("AUR-"+String(x.id).toUpperCase());
+const SWC={gold:"#d4af37","rose gold":"#b76e79",silver:"#c0c0c0",black:"#111",white:"#fff"};
+const sw=x=>{const c=SWC[String(x.col||"Gold").toLowerCase()];return c?`<i style="display:inline-block;width:11px;height:11px;border-radius:50%;background:${c};border:1px solid var(--line);margin-right:6px;vertical-align:-1px"></i>`:""};
+function totals(){const ids=Object.keys(cart).filter(i=>P.find(p=>p.id==i));let mrp=0,sale=0,n=0;ids.forEach(i=>{const x=P.find(p=>p.id==i),q=cart[i];mrp+=x.o*q;sale+=x.p*q;n+=q});
+ const fs=+C.freeShip||0,ship=n?(fs>0&&sale>=fs?0:(+C.shipFee||0)):0,plat=n?(+C.platFee||0):0;
+ let cd=0;if(cpn&&n&&sale>=(cpn.min||0)){cd=cpn.type=="percent"?Math.round(sale*cpn.v/100):Math.round(cpn.v);cd=Math.min(cd,sale)}
+ return{ids,n,mrp,sale,disc:mrp-sale,cd,ship,plat,total:sale-cd+ship+plat}}
+function priceBox(t){return `<div class="box pb"><h3>Price details</h3><div class="sum"><span>Price (${t.n} item${t.n>1?"s":""})</span><span>${inr(t.mrp)}</span></div><div class="sum"><span>Shipping charges</span><span>${t.ship?inr(t.ship):"FREE"}</span></div><div class="sum"><span>Platform fee</span><span>${inr(t.plat)}</span></div><div class="sum"><span>Discount</span><span style="color:#1a7f4b">− ${inr(t.disc)}</span></div>${t.cd?`<div class="sum"><span>Coupon (${esc(cpn.code)})</span><span style="color:#1a7f4b">− ${inr(t.cd)}</span></div>`:""}<div class="sum tot"><b style="font-weight:500">Total amount</b><b style="font-weight:500">${inr(t.total)}</b></div><p class="meta" style="color:#1a7f4b;margin:6px 0 0">You save ${inr(t.disc+t.cd)} on this order</p></div>`}
+function couponBox(){return cpn?`<div class="dl r2" style="margin:14px 0;justify-content:space-between"><span><b style="font-weight:500">${esc(cpn.code)}</b> applied</span><button class="lk2" data-cx style="margin:0">Remove</button></div>`:`<div class="dl" style="margin:14px 0"><div class="r2"><input id="cpi" placeholder="Discount code" style="flex:1;min-width:0;border:1px solid var(--line);border-radius:var(--br);padding:10px 12px;font:inherit;background:var(--bg);color:var(--ink);text-transform:uppercase"><button class="btn" data-ap style="padding:10px 18px">Apply</button></div></div>`}
+async function applyCode(){const c=($("cpi").value||"").trim().toUpperCase();if(!c)return toast("Enter a code");if(FB.startsWith("PASTE"))return toast("Discount codes are not available yet");
+ try{const r=await fetch(FB.replace(/\/$/,"")+"/discounts/"+encodeURIComponent(c)+".json"),d=await r.json(),t=totals();if(!d||d.on===false)return toast("Invalid or expired code");if(t.sale<(+d.min||0))return toast("Add items worth "+inr(d.min)+" to use this code");cpn={code:c,type:d.type,v:+d.v,min:+d.min||0};route(1);toast("Code applied")}catch(_){toast("Could not check the code")}}
+function buynow(){
+ const t=totals();if(!t.ids.length){location.hash="/cart";return}
+ const rows=t.ids.map(i=>{const x=P.find(p=>p.id==i),q=cart[i];return `<div class="ci"><div class="th">${vis(x)}</div><div class="x"><h3>${esc(x.n)}</h3><div class="meta" style="margin:0 0 8px">${esc(x.col||"Gold")} · SKU ${esc(skuOf(x))}</div><div class="r2"><button class="qb" data-q="${esc(i)}" data-d="-1" aria-label="Less">−</button><b style="font-weight:500">${q}</b><button class="qb" data-q="${esc(i)}" data-d="1" aria-label="More">+</button></div></div><b style="font-weight:500">${inr(x.p*q)}</b></div>`}).join("");
+ app.innerHTML=`<div class="pg ck" style="padding-bottom:120px"><button class="back" data-back>← Back</button><h2>Order summary</h2>${rows}<div class="dl" style="margin:18px 0"><b style="font-weight:500;display:flex;align-items:center;gap:10px">${TRUCK}Delivery in ${esc(C.delivTxt)}</b></div>${couponBox()}${priceBox(t)}${trust()}</div><div class="sticky"><span class="price"><b style="font-size:20px;font-weight:500">${inr(t.total)}</b><div class="meta" style="margin:0">Total amount</div></span><button class="btn" data-go2>Continue to checkout</button></div>`;goTop()}
+function checkout(){
+ const t=totals();if(!t.ids.length){location.hash="/cart";return}
+ if(USER){if(!cust.n)cust.n=USER.name;if(!cust.e)cust.e=USER.email}
+ const v=k=>esc(cust[k]||"");
+ app.innerHTML=`<div class="pg ck"><button class="back" data-back>← Back</button><h2>Checkout</h2>${!USER&&authOK()?'<p class="meta">Have an account? <button class="lk2" data-needlogin="/checkout" style="margin:0">Log in</button> to track your order and delivery.</p>':""}<div class="box"><input id="c-n" placeholder="Full name" autocomplete="name" value="${v("n")}"><input id="c-p" placeholder="Phone (10 digits)" inputmode="numeric" maxlength="10" autocomplete="tel" value="${v("p")}"><input id="c-e" type="email" placeholder="Email" autocomplete="email" value="${v("e")}"><textarea id="c-a" rows="3" placeholder="Full delivery address" autocomplete="street-address">${v("a")}</textarea><input id="c-z" placeholder="Pincode" inputmode="numeric" maxlength="6" autocomplete="postal-code" value="${v("z")}"></div><div class="dl" style="margin-bottom:14px"><b style="font-weight:500;display:flex;align-items:center;gap:10px">${TRUCK}Delivery in ${esc(C.delivTxt)}</b></div>${priceBox(t)}${payBox()}<button class="btn" id="pay" data-pay style="width:100%">${payLabel(t.total)}</button><p class="meta" style="margin-top:10px;text-align:center">${isCod()?"Pay in cash when your parcel is delivered":rzpReady()?"Secure online payment":""}</p>${cust.n?`<p style="text-align:center"><button class="lk2" data-clr>Clear saved details</button></p>`:""}</div>`;goTop()}
+const STEPS=["unfulfilled","packed","shipped","delivered"],SLB={unfulfilled:"Order placed",packed:"Packed",shipped:"Shipped",delivered:"Delivered",cancelled:"Cancelled"};
+function trackHTML(d){
+ const s=(d&&d.s)||"unfulfilled",i=STEPS.indexOf(s);d=d||{};
+ const bar=s=="cancelled"?'<p class="meta" style="color:#b3261e">This order was cancelled</p>':`<div class="steps">${STEPS.map((k,j)=>`<div class="stp${j<=i?" on":""}"><i></i><span>${SLB[k]}</span></div>`).join("")}</div>`;
+ const info=[d.city?`Parcel is now in: <b style="font-weight:500">${esc(d.city)}</b>`:"",d.courier?`Courier: <b style="font-weight:500">${esc(d.courier)}</b>`:"",d.awb?`Tracking ID: <b style="font-weight:500">${esc(d.awb)}</b>`:"",d.eta?`Expected delivery: <b style="font-weight:500">${esc(d.eta)}</b>`:""].filter(Boolean);
+ const lk=d.url&&/^https?:\/\//.test(d.url)?`<a class="btn o" style="padding:8px 16px;margin-top:6px;font-size:14px" href="${esc(d.url)}" target="_blank" rel="noopener">Track on courier site</a>`:"";
+ const log=(d.log||[]).filter(Boolean).slice().reverse().map(l=>`<div class="tl"><i></i><div><b style="font-weight:500">${esc(SLB[l.s]||l.s)}${l.city?" · "+esc(l.city):""}</b>${l.note?`<div class="meta" style="margin:0">${esc(l.note)}</div>`:""}<div class="meta" style="margin:0">${new Date(l.t).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</div></div></div>`).join("");
+ return bar+(info.length?`<div style="margin:10px 0;line-height:1.8;font-size:14px">${info.join("<br>")}</div>`:"")+lk+(log?`<div class="tls">${log}</div>`:"")}
+async function fillStatus(){if(FB.startsWith("PASTE"))return;
+ for(const el of document.querySelectorAll(".trk[data-oid]")){const id=el.dataset.oid;if(!id)continue;
+  try{const r=await fetch(FB.replace(/\/$/,"")+"/orderstatus/"+encodeURIComponent(id)+".json"),d=await r.json();
+   el.innerHTML=trackHTML(d);const st=el.closest(".box").querySelector(".st");if(st)st.textContent=SLB[(d&&d.s)||"unfulfilled"]||"Order placed"}catch(_){}}}
+function parseItems(s){return String(s||"").split(", ").map(p=>{const q=p.match(/^(.*) x(\d+)$/);return q?{n:q[1],q:+q[2],p:0}:{n:p,q:1,p:0}}).filter(i=>i.n)}
+async function orders(){
+ const local=LS.get("aur_orders",[]);let R=null;
+ if(USER&&!FB.startsWith("PASTE")){app.innerHTML=`<div class="pg ck"><h2>My orders</h2><p class="sub">Loading…</p></div>`;
+  try{const tk=await getTok();if(!tk)throw 0;
+   const r=await fetch(FB.replace(/\/$/,"")+"/orders.json?orderBy=%22uid%22&equalTo=%22"+encodeURIComponent(USER.uid)+"%22&auth="+tk),d=await r.json();if(!r.ok)throw 0;
+   R=Object.entries(d||{}).map(([id,o])=>({oid:id,id,date:o.t,items:(o.items||[]).filter(Boolean),total:o.total,to:o.name,addr:(o.address||"")+", "+(o.pincode||""),pay:o.pay})).sort((a,b)=>b.date-a.date);
+   local.forEach(l=>{if(!R.some(x=>x.oid==(l.oid||l.id)))R.push(l)})}catch(_){R=null}
+  if(location.hash!="#/orders")return}
+ if(!R)R=local;
+ const nudge=!USER&&authOK()?'<p class="meta">Log in to see your orders and delivery updates on any device. <button class="lk2" data-needlogin="/orders" style="margin:0">Log in</button></p>':"";
+ app.innerHTML=`<div class="pg ck"><h2>My orders</h2><p class="sub">Track your parcel and see delivery updates here.</p>${nudge}${R.length?R.map(r=>`<div class="box"><div class="row"><b style="font-weight:500">${new Date(r.date).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}</b><span class="meta st" style="margin:0">Order placed</span></div>${(r.items||[]).map(i=>`<div class="sum"><span>${esc(i.n)} × ${i.q}</span><span>${i.p?inr(i.p*i.q):""}</span></div>`).join("")}<div class="sum tot"><b style="font-weight:500">${r.pay=="COD"?"Pay on delivery":"Total paid"}</b><b style="font-weight:500">${inr(r.total)}</b></div><p class="meta" style="margin:0">Order ID: ${esc(String(r.oid||r.id))}<br>Payment: ${r.pay=="COD"?"Cash on Delivery":"Online"}<br>Deliver to: ${esc(r.to)}, ${esc(r.addr)}<br>Expected delivery: ${esc(C.delivTxt)}</p><div class="trk" data-oid="${esc(r.oid||"")}"></div></div>`).join(""):`<p class="empty">No orders yet. <a href="#/">Start shopping</a></p>`}</div>`;goTop();fillStatus()}
+function thanks(){
+ const id=sessionStorageSafe("rzp_ok");
+ app.innerHTML=`<div class="pg" style="text-align:center"><h2>Thank you!</h2><p class="sub">${_mode=="cod"?`Your order is placed. Please keep ${inr(_tot)} ready to pay in cash when your parcel arrives.`:"Your payment was successful."} You can track your parcel in My orders.${id?`<br>Order ID: ${esc(id)}`:""}</p><a class="btn" href="#/">Continue shopping</a></div>`;goTop()}
+let _ok="";const sessionStorageSafe=()=>_ok;
+function loadRzp(){return new Promise((ok,no)=>{if(window.Razorpay)return ok();const s=document.createElement("script");s.src="https://checkout.razorpay.com/v1/checkout.js";s.onload=ok;s.onerror=()=>no(new Error("Could not load Razorpay. Check your internet."));document.head.appendChild(s)})}
+let payM=ENABLE_COD?"cod":"online",_mode="",_tot=0;
+const rzpReady=()=>!(RZP_KEY_ID.startsWith("PASTE")||API_BASE.startsWith("PASTE")); // online payment gateway ready? (will switch to Shiprocket later)
+const isCod=()=>ENABLE_COD&&(payM=="cod"||!rzpReady());
+const payLabel=tot=>(isCod()?"Place order":"Pay")+" "+inr(tot);
+function payBox(){const r=rzpReady();if(!ENABLE_COD&&!r)return `<div class="box"><b style="font-weight:500">Payment</b><p class="meta" style="margin:0">Online payment is being set up. Please check back soon.</p></div>`;
+ return `<div class="box"><b style="font-weight:500">Payment method</b>${ENABLE_COD?`<label class="dl r2"><input type="radio" name="pm" value="cod" data-pm${isCod()?" checked":""}><span>Cash on Delivery<br><span class="meta" style="margin:0">Pay in cash when your parcel arrives</span></span></label>`:""}${r?`<label class="dl r2"><input type="radio" name="pm" value="online" data-pm${!isCod()?" checked":""}><span>Pay online<br><span class="meta" style="margin:0">UPI, cards, netbanking, wallets</span></span></label>`:""}</div>`}
+document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.pm!==undefined){payM=e.target.value;const b=$("pay");if(b)b.textContent=payLabel(totals().total)}});
+async function placeCod(){
+ const t=totals(),btn=$("pay"),lab=btn.textContent;
+ if(FB.startsWith("PASTE"))return toast("The store database is not connected yet");
+ const sold=t.ids.map(i=>P.find(p=>p.id==i)).find(x=>x&&x.so);if(sold)return toast(sold.n+" is sold out. Please remove it from your bag");
+ btn.disabled=true;btn.textContent="Placing your order…";
+ const lines=t.ids.map(i=>{const x=P.find(p=>p.id==i);return{id:String(i),n:x.n,q:cart[i],p:x.p}});
+ const id="AUR-"+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();
+ const rec={t:Date.now(),uid:USER?USER.uid:"",acct:USER?USER.email:"",name:cust.n,phone:cust.p,email:cust.e,address:cust.a,pincode:cust.z,items:lines,sub:t.sale,cd:t.cd,ship:t.ship,plat:t.plat,total:t.total,coupon:cpn?cpn.code:"",pay:"COD"};
+ try{const tk=await getTok();
+  const r=await fetch(FB.replace(/\/$/,"")+"/orders/"+id+".json"+(tk?"?auth="+tk:""),{method:"PUT",body:JSON.stringify(rec)});
+  if(!r.ok)throw new Error("Could not place the order. Please try again.");
+  const od=LS.get("aur_orders",[]);od.unshift({id,oid:id,date:rec.t,total:t.total,items:lines,to:cust.n,addr:cust.a+", "+cust.z,pay:"COD"});LS.set("aur_orders",od.slice(0,50));
+  _ok=id;_mode="cod";_tot=t.total;cart={};cpn=null;location.hash="/thanks";badges()}
+ catch(e){btn.disabled=false;btn.textContent=lab;toast(e.message||"Something went wrong")}}
+async function pay(){
+ const g=i=>$(i).value.trim();
+ cust={n:g("c-n"),p:g("c-p"),e:g("c-e"),a:g("c-a"),z:g("c-z")};
+ if(cust.n.length<2)return toast("Enter your name");
+ if(!/^\d{10}$/.test(cust.p))return toast("Enter a 10-digit phone number");
+ if(!/^\S+@\S+\.\S+$/.test(cust.e))return toast("Enter a valid email");
+ if(cust.a.length<8)return toast("Enter your full address");
+ if(!/^\d{6}$/.test(cust.z))return toast("Enter a 6-digit pincode");
+ LS.set("aur_cust",cust); // address is saved on this device, so the customer does not type it again
+ if(isCod())return placeCod();
+ if(!rzpReady()){toast("Online payment is not set up yet");return}
+ const snap=totals(),lines=snap.ids.map(i=>{const x=P.find(p=>p.id==i);return{n:x.n,q:cart[i],p:x.p}});
+ const items=Object.entries(cart).map(([id,qty])=>({id,qty})),btn=$("pay"),label=btn.textContent;
+ btn.disabled=true;btn.textContent="Please wait…";
+ const done=()=>{btn.disabled=false;btn.textContent=label};
+ try{
+  const tk=await getTok();
+  const r=await fetch(API_BASE+"?action=create",{method:"POST",headers:{"Content-Type":"application/json",...(tk?{Authorization:"Bearer "+tk}:{})},body:JSON.stringify({items,customer:cust,code:cpn&&cpn.code})});
+  const o=await r.json();if(!r.ok)throw new Error(o.error||"Could not start payment");
+  await loadRzp();
+  const rz=new Razorpay({key:RZP_KEY_ID,amount:o.amount,currency:"INR",name:C.storeName,description:"Order from "+C.storeName,order_id:o.order_id,
+   prefill:{name:cust.n,email:cust.e,contact:cust.p},notes:{address:cust.a},theme:{color:C.btn},
+   modal:{ondismiss:done},
+   handler:async resp=>{
+    try{const v=await fetch(API_BASE+"?action=verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(resp)});
+     const d=await v.json();if(!v.ok||!d.ok)throw new Error(d.error||"Payment could not be verified");
+     _ok=resp.razorpay_payment_id;
+     const od=LS.get("aur_orders",[]);od.unshift({id:resp.razorpay_payment_id,oid:resp.razorpay_order_id,date:Date.now(),total:snap.total,items:lines,to:cust.n,addr:cust.a+", "+cust.z});LS.set("aur_orders",od.slice(0,50));
+     cart={};cpn=null;location.hash="/thanks";badges()}
+    catch(e){done();toast(e.message)}}});
+  rz.on("payment.failed",x=>{done();toast((x.error&&x.error.description)||"Payment failed. Try again")});
+  rz.open();
+ }catch(e){done();toast(e.message||"Something went wrong")}}
+function route(k){
+ keep=k;const h=location.hash.slice(1)||"/";$("sb").style.display=h=="/search"?"block":"none";if(h=="/search")$("q").value=qs;$("drawer").classList.remove("o");
+ if(h.startsWith("/product/"))product(h.split("/")[2]);
+ else if(h=="/cart")cartv();
+ else if(h=="/search")searchv();
+ else if(h=="/account")account();
+ else if(h=="/orders")orders();
+ else if(h=="/buynow")buynow();
+ else if(h=="/checkout")checkout();
+ else if(h=="/thanks")thanks();
+ else if(h=="/wishlist")list(Object.keys(liked),"Liked products","Tap the heart on any product to save it here.");
+ else{home();goTop()}
+ badges();keep=0}
+addEventListener("hashchange",()=>route());
+document.addEventListener("click",e=>{
+ const t=e.target,g=s=>t.closest(s);let m;
+ if(m=g("[data-like]")){e.stopPropagation();const i=m.dataset.like;liked[i]?delete liked[i]:liked[i]=1;toast(liked[i]?"Added to liked products":"Removed from liked products");route(1);return}
+ if(m=g("[data-add]")){e.stopPropagation();const i=m.dataset.add;cart[i]=(cart[i]||0)+1;badges();toast("Added to cart");return}
+ if(m=g("[data-buy]")){cart[m.dataset.buy]=(cart[m.dataset.buy]||0)+1;location.hash="/buynow";return}
+ if(m=g("[data-rm]")){delete cart[m.dataset.rm];route(1);return}
+ if(m=g("[data-code]")){try{navigator.clipboard.writeText(m.dataset.code)}catch(_){}toast("Code "+m.dataset.code+" copied");return}
+ if(g("[data-checkout]")){location.hash="/buynow";return}
+ if(m=g("[data-sl]")){const s=$("sl");if(s)s.scrollBy({left:+m.dataset.sl*s.clientWidth,behavior:"smooth"});return}
+ if(g("[data-clr]")){cust={};LS.set("aur_cust",{});route(1);toast("Saved details cleared");return}
+ if(g("[data-ap]")){applyCode();return}
+ if(m=g("[data-amode]")){amode=m.dataset.amode;account();return}
+ if(g("[data-auth]")){doAuth();return}
+ if(g("[data-forgot]")){forgot();return}
+ if(g("[data-logout]")){USER=null;LS.set("aur_user",null);theme();location.hash="/";toast("Logged out");return}
+ if(m=g("[data-needlogin]")){nextHash=m.dataset.needlogin;location.hash="/account";return}
+ if(g("#pf")){location.hash="/account";return}
+ if(g("[data-cx]")){cpn=null;route(1);return}
+ if(g("[data-go2]")){location.hash="/checkout";return}
+ if(m=g("[data-q]")){e.stopPropagation();const i=m.dataset.q;cart[i]=(cart[i]||0)+ +m.dataset.d;if(cart[i]<=0)delete cart[i];route(1);return}
+ if(g("[data-pay]")){pay();return}
+ if(g("[data-back]")){history.length>1?history.back():location.hash="/";return}
+ if(g("[data-pin]")){toast(/^\d{6}$/.test($("pc").value)?"Delivery in "+C.delivTxt:"Enter a valid 6-digit pincode");return}
+ if(g("[data-scroll]")){e.preventDefault();$("shop")&&$("shop").scrollIntoView({behavior:"smooth"});return}
+ if(m=g("[data-cat]")){e.preventDefault();cat=m.dataset.cat;qs="";$("q").value="";if(location.hash.length>2)location.hash="/";else route(1);return}
+ if(m=g("[data-go]")){location.hash="/product/"+m.dataset.go;return}
+ if(g("#menu"))$("drawer").classList.add("o");
+ if(g(".sh"))$("drawer").classList.remove("o");
+ if(g("#srch")){const s=$("sb");if(s.style.display=="block"){qs="";$("q").value="";location.hash="/"}else{s.style.display="block";$("q").value=qs;$("q").focus();if(location.hash!="#/search")location.hash="/search"}}
+ if(g("#wl"))location.hash="/wishlist";
+ if(g("#ct"))location.hash="/cart";
+});
+$("q").addEventListener("input",e=>{qs=e.target.value;if(location.hash!="#/search")location.hash="/search";else searchv()});
+$("q").addEventListener("keydown",e=>{if(e.key=="Enter")e.target.blur()});
+async function load(){
+ if(FB.startsWith("PASTE"))return;const u=FB.replace(/\/$/,""),j=p=>fetch(u+p+".json").then(r=>r.ok?r.json():null).catch(()=>null);
+ const [a,b]=await Promise.all([j("/products"),j("/site")]);
+ if(b){C={...D,...b};theme()}
+ if(a)setAll(Object.entries(a).map(([id,v])=>({...v,id})).sort((x,y)=>(x.ord||0)-(y.ord||0)));theme();
+ if(location.hash!="#/checkout")route(1)}
+theme();route();load();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
+</script>
+</body>
+</html>
